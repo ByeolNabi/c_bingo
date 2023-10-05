@@ -5,6 +5,7 @@
 
 #define MAX 6
 
+inline void random_non_dup1();	// 중복없는 랜덤뽑기 (MAX종속)
 void initBoard();
 void printBoard();
 void deleteNum(int);	// 입력한 번호를 0으로 바꿔주는 함수
@@ -36,13 +37,20 @@ int main() {
 }
 //━┃┏ ┓┗ ┛┣ ┫┳ ┻ ╋
 
+
+// 수가 커질수록 시간복잡도가 많이 올라간다.
+inline void random_non_dup1() {
+
+}
 void initBoard() {
+	int arr[MAX] = { 0 };
 	int cnt = 1;
 	// 1부터 i*j까지 순서대로 대입
 	for (int i = 0; i < MAX; ++i) {
 		for (int j = 0; j < MAX; ++j) {
 			//Board[i][j] = cnt++;
 			Board[i][j] = 1; // 빙고 체크를 편하게 하기 위한 코드
+			//Board[i][j] = ;
 		}
 	}
 }
