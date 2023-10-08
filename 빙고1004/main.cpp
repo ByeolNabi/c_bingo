@@ -1,11 +1,12 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
+#include <time.h>
+//#include <windows.h>
 
-#define MAX 6
+#define MAX 3
 
-inline void random_non_dup1();	// 중복없는 랜덤뽑기 (MAX종속)
+void random_non_dup1(int *arr);	// 중복없는 랜덤뽑기 (MAX종속)
 void initBoard();
 void printBoard();
 void deleteNum(int);	// 입력한 번호를 0으로 바꿔주는 함수
@@ -14,8 +15,10 @@ int checkBoard();		// max를 이용해서 빙고 라인 갯수 체크하기
 int Board[MAX][MAX];
 
 int main() {
+	srand((unsigned)time(NULL));
 	int num, lines;
 	initBoard();
+
 	printBoard();
 
 	while (1) {
@@ -23,7 +26,7 @@ int main() {
 		scanf("%d", &num);
 
 		deleteNum(num);
-		system("cls"); //화면 새로고침
+//		system("cls"); //화면 새로고침
 		printBoard();
 
 		lines = checkBoard();
@@ -35,22 +38,45 @@ int main() {
 	}
 	return 0;
 }
+
 //━┃┏ ┓┗ ┛┣ ┫┳ ┻ ╋
-
-
-// 수가 커질수록 시간복잡도가 많이 올라간다.
-inline void random_non_dup1() {
-
+void random_non_dup1(int *arr){
+	// printf("random_start\n");
+	int max_num = MAX*MAX;
+	
+	for (int i = 0; i < max_num; i++) {
+		arr[i] = (rand() % max_num) + 1;
+		for (int j = 0; j < i; j++) {
+			if (arr[i] == arr[j]) i--;
+		}
+	}
+	// for(int i = 0; i < max_num; ++i){
+	// 	arr[i] = rand()%max_num+1;
+	// 	printf("[");
+	// 	for(int idx = 0; idx < max_num; idx++){
+	// 		printf("%d, ", arr[idx]);
+	// 	}
+	// 	printf("]\n");
+	// 	printf("randNUM: %d", rand_num);
+	// 	for(int j = 0; j < i; ++j){
+	// 		if(arr[j] == rand_num) {
+	// 			--i;
+	// 			break;
+	// 		}
+	// 	}
+	// }
 }
 void initBoard() {
-	int arr[MAX] = { 0 };
+	// printf("initBoard_start\n");
+	int arr[MAX*MAX] = { 0 };
+	random_non_dup1(arr);
 	int cnt = 1;
 	// 1부터 i*j까지 순서대로 대입
 	for (int i = 0; i < MAX; ++i) {
 		for (int j = 0; j < MAX; ++j) {
-			//Board[i][j] = cnt++;
-			Board[i][j] = 1; // 빙고 체크를 편하게 하기 위한 코드
-			//Board[i][j] = ;
+			//Board[i][j] = cnt++;	// 선형 입력
+			//Board[i][j] = 1; // 빙고 체크를 편하게 하기 위한 코드
+			Board[i][j] = arr[i*MAX+j];
 		}
 	}
 }
@@ -70,7 +96,7 @@ void printBoard() {
 			if(Board[row][col] != 0)
 				printf("%2d┃", Board[row][col]);
 			else
-				printf("♥┃", Board[row][col]);	// 0(선택했다면)이면 하트로 출력
+				printf(" ♥┃");	// 0(선택했다면)이면 하트로 출력
 		}
 		printf("\n");
 		// 닫는 라인 그리기
