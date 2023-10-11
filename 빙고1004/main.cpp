@@ -4,7 +4,7 @@
 #include <time.h>
 //#include <windows.h>
 
-#define MAX 3
+#define MAX 5
 
 void random_non_dup1(int *arr);	// 중복없는 랜덤뽑기 (MAX종속)
 void initBoard();
@@ -26,7 +26,7 @@ int main() {
 		scanf("%d", &num);
 
 		deleteNum(num);
-//		system("cls"); //화면 새로고침
+		//system("cls"); //화면 새로고침
 		printBoard();
 
 		lines = checkBoard();
@@ -38,9 +38,9 @@ int main() {
 	}
 	return 0;
 }
-
-//━┃┏ ┓┗ ┛┣ ┫┳ ┻ ╋
-void random_non_dup1(int *arr){
+// 될때까지 그리는 알고리즘
+void random_non_dup1(){
+	int arr[MAX * MAX] = { 0 };
 	// printf("random_start\n");
 	int max_num = MAX*MAX;
 	
@@ -48,6 +48,12 @@ void random_non_dup1(int *arr){
 		arr[i] = (rand() % max_num) + 1;
 		for (int j = 0; j < i; j++) {
 			if (arr[i] == arr[j]) i--;
+		}
+	}
+	// 1부터 i*j까지 순서대로 대입
+	for (int i = 0; i < MAX; ++i) {
+		for (int j = 0; j < MAX; ++j) {
+			Board[i][j] = arr[i*MAX+j];
 		}
 	}
 	// for(int i = 0; i < max_num; ++i){
@@ -66,20 +72,34 @@ void random_non_dup1(int *arr){
 	// 	}
 	// }
 }
-void initBoard() {
-	// printf("initBoard_start\n");
-	int arr[MAX*MAX] = { 0 };
-	random_non_dup1(arr);
-	int cnt = 1;
+// 일정 횟수만큼 섞는 알고리즘
+void random_non_dup2() {
 	// 1부터 i*j까지 순서대로 대입
+	int cnt = 1;
 	for (int i = 0; i < MAX; ++i) {
 		for (int j = 0; j < MAX; ++j) {
-			//Board[i][j] = cnt++;	// 선형 입력
-			//Board[i][j] = 1; // 빙고 체크를 편하게 하기 위한 코드
-			Board[i][j] = arr[i*MAX+j];
+			Board[i][j] = cnt++; // 빙고 체크를 편하게 하기 위한 코드
 		}
 	}
+	int mix = 10000;
+	int x1, y1, x2, y2, tmp;
+	for (int i = 0; i < mix; ++i) {
+		x1 = rand() % MAX;
+		y1 = rand() % MAX;
+		x2 = rand() % MAX;
+		y2 = rand() % MAX;
+
+		tmp = Board[x2][y2];
+		Board[x2][y2] = Board[x1][y1];
+		Board[x1][y1] = tmp;
+	}
 }
+void initBoard() {
+	// printf("initBoard_start\n");
+	random_non_dup2();
+	
+}
+//━┃┏ ┓┗ ┛┣ ┫┳ ┻ ╋
 void printBoard() {
 	// 뚜껑 그리기
 	printf("┏");
@@ -96,7 +116,8 @@ void printBoard() {
 			if(Board[row][col] != 0)
 				printf("%2d┃", Board[row][col]);
 			else
-				printf(" ♥┃");	// 0(선택했다면)이면 하트로 출력
+				// printf(" ♥┃");	// 0(선택했다면)이면 하트로 출력 mac
+				printf("♥┃");	// 0(선택했다면)이면 하트로 출력 window
 		}
 		printf("\n");
 		// 닫는 라인 그리기
